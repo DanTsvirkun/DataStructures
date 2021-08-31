@@ -2,28 +2,38 @@ import java.util.Arrays;
 
 public class MyQueue<E> {
     private E[] instance;
+    private static final int DEFAULT_CAPACITY = 11;
+    private int currentCapacity = DEFAULT_CAPACITY;
+    private int index = -1;
 
-    MyQueue(int size) throws IllegalArgumentException {
+    public MyQueue(int size) throws IllegalArgumentException {
         if (size < 0) {
             throw new IllegalArgumentException("Size can't be less than 0");
         }
+
+        if(size == 0) {
+            instance = (E[]) new Object[DEFAULT_CAPACITY];
+        }
+
         instance = (E[]) new Object[size];
     }
 
-    MyQueue() {
-        this(0);
+    public MyQueue() {
+        this(DEFAULT_CAPACITY);
     }
 
     public boolean add(E value) {
-        E[] newInstance = (E[]) new Object[instance.length + 1];
+        index++;
+        instance[index] = value;
 
-        for (int i = 0; i < size(); i++) {
-            newInstance[i] = instance[i];
+        if (index == size() - 1) {
+            currentCapacity *= 2;
+            E[] newInstance = (E[]) new Object[currentCapacity];
+
+            System.arraycopy(instance, 0, newInstance, 0, size());
+
+            instance = newInstance;
         }
-
-        newInstance[newInstance.length - 1] = value;
-
-        instance = newInstance;
 
         return true;
     }
@@ -33,29 +43,24 @@ public class MyQueue<E> {
             return false;
         }
 
-        E itemToDelete = instance[index];
+        instance[index] = null;
+        this.index--;
 
-        E[] newInstance = (E[]) new Object[instance.length - 1];
+        System.arraycopy(instance, index + 1, instance, index, size() - 1 - index);
 
-        for (int i = 0, j = 0; i < size(); i++) {
-            E currentItem = instance[i];
-
-            if (itemToDelete != currentItem) {
-                newInstance[j++] = currentItem;
-            }
-        }
-
-        instance = newInstance;
+        instance[this.index + 1] = null;
 
         return true;
     }
 
     public void clear() {
         instance = (E[]) new Object[0];
+        index = -1;
+        currentCapacity = DEFAULT_CAPACITY;
     }
 
     public int size() {
-        return instance.length;
+        return index + 1;
     }
 
     public E peek() {
@@ -73,9 +78,10 @@ public class MyQueue<E> {
 
         E firstItem = instance[0];
 
-        E[] newInstance = (E[]) Arrays.copyOfRange(instance, 1, instance.length);
+        System.arraycopy(instance, 1, instance, 0, size() - 1);
 
-        instance = newInstance;
+        instance[index] = null;
+        this.index--;
 
         return firstItem;
     }

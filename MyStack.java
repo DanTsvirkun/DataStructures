@@ -2,21 +2,26 @@ import java.util.Arrays;
 
 public class MyStack<E> {
     private E[] instance;
+    private static final int DEFAULT_CAPACITY = 10;
+    private int currentCapacity = DEFAULT_CAPACITY;
+    private int index = -1;
 
-    MyStack() {
-        instance = (E[]) new Object[0];
+    public MyStack() {
+        instance = (E[]) new Object[DEFAULT_CAPACITY];
     }
 
     public E push(E value) {
-        E[] newInstance = (E[]) new Object[instance.length + 1];
+        index++;
+        instance[index] = value;
 
-        for (int i = 0; i < instance.length; i++) {
-            newInstance[i] = instance[i];
+        if (index == size() - 1) {
+            currentCapacity *= 2;
+            E[] newInstance = (E[]) new Object[currentCapacity];
+
+            System.arraycopy(instance, 0, newInstance, 0, size());
+
+            instance = newInstance;
         }
-
-        newInstance[newInstance.length - 1] = value;
-
-        instance = newInstance;
 
         return value;
     }
@@ -28,27 +33,24 @@ public class MyStack<E> {
 
         E itemToDelete = instance[index];
 
-        E[] newInstance = (E[]) new Object[instance.length - 1];
+        instance[index] = null;
+        this.index--;
 
-        for (int i = 0, j = 0; i < instance.length; i++) {
-            E currentItem = instance[i];
+        System.arraycopy(instance, index + 1, instance, index, size() - 1 - index);
 
-            if (itemToDelete != currentItem) {
-                newInstance[j++] = currentItem;
-            }
-        }
-
-        instance = newInstance;
+        instance[this.index + 1] = null;
 
         return itemToDelete;
     }
 
     public void clear() {
         instance = (E[]) new Object[0];
+        index = -1;
+        currentCapacity = DEFAULT_CAPACITY;
     }
 
     public int size() {
-        return instance.length;
+        return index + 1;
     }
 
     public E peek() {
@@ -66,9 +68,8 @@ public class MyStack<E> {
 
         E firstItem = instance[size() - 1];
 
-        E[] newInstance = (E[]) Arrays.copyOfRange(instance, 0, size() - 1);
-
-        instance = newInstance;
+        instance[size() - 1] = null;
+        this.index--;
 
         return firstItem;
     }

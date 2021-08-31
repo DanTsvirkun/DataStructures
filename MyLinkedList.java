@@ -6,7 +6,7 @@ public class MyLinkedList<E> {
         private MyNode prevNode;
         private MyNode nextNode;
 
-        MyNode(E data) {
+        public MyNode(E data) {
             this.data = data;
 
             if (head == null) {

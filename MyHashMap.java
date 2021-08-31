@@ -11,7 +11,7 @@ public class MyHashMap<K, V> {
         private V value;
         private MyNode nextNode;
 
-        MyNode(int hash, K key, V value) {
+        public MyNode(int hash, K key, V value) {
             this.hash = hash;
             this.key = key;
             this.value = value;
@@ -25,7 +25,7 @@ public class MyHashMap<K, V> {
         }
     }
 
-    MyHashMap() {
+    public MyHashMap() {
         table = new MyNode[DEFAULT_CAPACITY];
     }
 

@@ -1,28 +1,16 @@
-import java.util.Arrays;
+package com.mycollections;
 
-public class MyQueue<E> {
+public class MyStack<E> {
     private E[] instance;
-    private static final int DEFAULT_CAPACITY = 11;
+    private static final int DEFAULT_CAPACITY = 10;
     private int currentCapacity = DEFAULT_CAPACITY;
     private int index = -1;
 
-    public MyQueue(int size) throws IllegalArgumentException {
-        if (size < 0) {
-            throw new IllegalArgumentException("Size can't be less than 0");
-        }
-
-        if(size == 0) {
-            instance = (E[]) new Object[DEFAULT_CAPACITY];
-        }
-
-        instance = (E[]) new Object[size];
+    public MyStack() {
+        instance = (E[]) new Object[DEFAULT_CAPACITY];
     }
 
-    public MyQueue() {
-        this(DEFAULT_CAPACITY);
-    }
-
-    public boolean add(E value) {
+    public E push(E value) {
         index++;
         instance[index] = value;
 
@@ -35,13 +23,15 @@ public class MyQueue<E> {
             instance = newInstance;
         }
 
-        return true;
+        return value;
     }
 
-    public boolean remove(int index) {
+    public E remove(int index) throws IllegalArgumentException {
         if (index < 0 || index > size() - 1) {
-            return false;
+            throw new IllegalArgumentException("Index out of bounds");
         }
+
+        E itemToDelete = instance[index];
 
         instance[index] = null;
         this.index--;
@@ -50,7 +40,7 @@ public class MyQueue<E> {
 
         instance[this.index + 1] = null;
 
-        return true;
+        return itemToDelete;
     }
 
     public void clear() {
@@ -68,19 +58,17 @@ public class MyQueue<E> {
             return null;
         }
 
-        return instance[0];
+        return instance[size() - 1];
     }
 
-    public E poll() {
+    public E pop() {
         if (size() == 0) {
             return null;
         }
 
-        E firstItem = instance[0];
+        E firstItem = instance[size() - 1];
 
-        System.arraycopy(instance, 1, instance, 0, size() - 1);
-
-        instance[index] = null;
+        instance[size() - 1] = null;
         this.index--;
 
         return firstItem;

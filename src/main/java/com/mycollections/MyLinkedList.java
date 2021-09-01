@@ -1,3 +1,5 @@
+package com.mycollections;
+
 public class MyLinkedList<E> {
     private MyNode head = null;
 

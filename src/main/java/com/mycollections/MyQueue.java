@@ -1,16 +1,28 @@
-import java.util.Arrays;
+package com.mycollections;
 
-public class MyStack<E> {
+public class MyQueue<E> {
     private E[] instance;
-    private static final int DEFAULT_CAPACITY = 10;
+    private static final int DEFAULT_CAPACITY = 11;
     private int currentCapacity = DEFAULT_CAPACITY;
     private int index = -1;
 
-    public MyStack() {
-        instance = (E[]) new Object[DEFAULT_CAPACITY];
+    public MyQueue(int size) throws IllegalArgumentException {
+        if (size < 0) {
+            throw new IllegalArgumentException("Size can't be less than 0");
+        }
+
+        if(size == 0) {
+            instance = (E[]) new Object[DEFAULT_CAPACITY];
+        }
+
+        instance = (E[]) new Object[size];
     }
 
-    public E push(E value) {
+    public MyQueue() {
+        this(DEFAULT_CAPACITY);
+    }
+
+    public boolean add(E value) {
         index++;
         instance[index] = value;
 
@@ -23,15 +35,13 @@ public class MyStack<E> {
             instance = newInstance;
         }
 
-        return value;
+        return true;
     }
 
-    public E remove(int index) throws IllegalArgumentException {
+    public boolean remove(int index) {
         if (index < 0 || index > size() - 1) {
-            throw new IllegalArgumentException("Index out of bounds");
+            return false;
         }
-
-        E itemToDelete = instance[index];
 
         instance[index] = null;
         this.index--;
@@ -40,7 +50,7 @@ public class MyStack<E> {
 
         instance[this.index + 1] = null;
 
-        return itemToDelete;
+        return true;
     }
 
     public void clear() {
@@ -58,17 +68,19 @@ public class MyStack<E> {
             return null;
         }
 
-        return instance[size() - 1];
+        return instance[0];
     }
 
-    public E pop() {
+    public E poll() {
         if (size() == 0) {
             return null;
         }
 
-        E firstItem = instance[size() - 1];
+        E firstItem = instance[0];
 
-        instance[size() - 1] = null;
+        System.arraycopy(instance, 1, instance, 0, size() - 1);
+
+        instance[index] = null;
         this.index--;
 
         return firstItem;

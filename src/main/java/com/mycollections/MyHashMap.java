@@ -1,3 +1,5 @@
+package com.mycollections;
+
 import java.util.Objects;
 
 public class MyHashMap<K, V> {

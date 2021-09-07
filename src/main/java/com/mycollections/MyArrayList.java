@@ -13,9 +13,11 @@ public class MyArrayList<E> {
 
         if(size == 0) {
             instance = (E[]) new Object[DEFAULT_CAPACITY];
+            return;
         }
 
         instance = (E[]) new Object[size];
+        currentCapacity = size;
     }
 
     public MyArrayList() {
@@ -26,7 +28,7 @@ public class MyArrayList<E> {
         index++;
         instance[index] = value;
 
-        if (index == size() - 1) {
+        if (index == currentCapacity - 1) {
             currentCapacity *= 2;
             E[] newInstance = (E[]) new Object[currentCapacity];
 
@@ -44,9 +46,9 @@ public class MyArrayList<E> {
         E itemToDelete = instance[index];
 
         instance[index] = null;
-        this.index--;
 
         System.arraycopy(instance, index + 1, instance, index, size() - 1 - index);
+        this.index--;
 
         instance[this.index + 1] = null;
 
@@ -69,5 +71,19 @@ public class MyArrayList<E> {
         }
 
         return instance[index];
+    }
+
+    public static void main(String[] args) {
+        MyArrayList<String> list = new MyArrayList<>();
+
+        for (int i = 0; i < 3; i++) {
+            list.add("item-" + i);
+        }
+
+        list.remove(1);
+
+        System.out.println("size = " + list.size());
+        System.out.println("item-0 = " + list.get(0));
+        System.out.println("item-2 = " + list.get(1));
     }
 }

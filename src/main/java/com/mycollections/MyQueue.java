@@ -13,9 +13,11 @@ public class MyQueue<E> {
 
         if(size == 0) {
             instance = (E[]) new Object[DEFAULT_CAPACITY];
+            return;
         }
 
         instance = (E[]) new Object[size];
+        currentCapacity = size;
     }
 
     public MyQueue() {
@@ -26,7 +28,7 @@ public class MyQueue<E> {
         index++;
         instance[index] = value;
 
-        if (index == size() - 1) {
+        if (index == currentCapacity - 1) {
             currentCapacity *= 2;
             E[] newInstance = (E[]) new Object[currentCapacity];
 
@@ -44,9 +46,9 @@ public class MyQueue<E> {
         }
 
         instance[index] = null;
-        this.index--;
-
         System.arraycopy(instance, index + 1, instance, index, size() - 1 - index);
+
+        this.index--;
 
         instance[this.index + 1] = null;
 

@@ -3,15 +3,15 @@ package com.mycollections;
 import java.util.Objects;
 
 public class MyHashMap<K, V> {
-    private MyNode[] table;
+    private MyNode<K, V>[] table;
     private static final int DEFAULT_CAPACITY = 16;
     private int currentCapacity = DEFAULT_CAPACITY;
 
     class MyNode<K, V> {
-        private int hash;
-        private K key;
-        private V value;
-        private MyNode nextNode;
+        private final int hash;
+        private final K key;
+        private final V value;
+        private MyNode<K, V> nextNode;
 
         public MyNode(int hash, K key, V value) {
             this.hash = hash;
@@ -31,20 +31,14 @@ public class MyHashMap<K, V> {
         table = new MyNode[DEFAULT_CAPACITY];
     }
 
-    public MyNode put(K key, V value) {
-        MyNode duplicate = get(key);
-
-        if (duplicate != null) {
-            return duplicate;
-        }
-
+    public MyNode<K, V> put(K key, V value) {
         float threshold = currentCapacity * 0.75f;
 
         if (threshold == size() + 1) {
             currentCapacity *= 2;
-            MyNode[] newTable = new MyNode[currentCapacity];
+            MyNode<K, V>[] newTable = new MyNode[currentCapacity];
 
-            for (MyNode item : table) {
+            for (MyNode<K, V> item : table) {
                 if (item != null) {
                     do {
                         int index = item.hash & (currentCapacity - 1);
@@ -57,7 +51,7 @@ public class MyHashMap<K, V> {
                             continue;
                         }
 
-                        MyNode existingItem = newTable[index];
+                        MyNode<K, V> existingItem = newTable[index];
 
                         while (existingItem.nextNode != null) {
                             existingItem = existingItem.nextNode;
@@ -78,44 +72,48 @@ public class MyHashMap<K, V> {
         int index = hash & (currentCapacity - 1);
 
         if (table[index] == null) {
-            table[index] = new MyNode(hash, key, value);
+            table[index] = new MyNode<>(hash, key, value);
             return null;
         }
 
-        MyNode existingItem = table[index];
+        MyNode<K, V> existingItem = table[index];
 
         while (existingItem.nextNode != null) {
+            if (existingItem.key.equals(key)) {
+                return existingItem;
+            }
+
             existingItem = existingItem.nextNode;
         }
 
-        existingItem.nextNode = new MyNode(hash, key, value);
+        existingItem.nextNode = new MyNode<>(hash, key, value);
         return null;
     }
 
-    public MyNode remove(K key) {
-        MyNode nodeToRemove = get(key);
-
-        if (nodeToRemove == null) {
-            return null;
-        }
-
+    public MyNode<K, V> remove(K key) {
         int hash = Objects.hashCode(key);
         int index = hash & (currentCapacity - 1);
 
-        MyNode item = table[index];
+        MyNode<K, V> prevNode = null;
+        MyNode<K, V> item = table[index];
 
-        if (item == nodeToRemove) {
-            table[index] = nodeToRemove.nextNode;
-            return nodeToRemove;
+        if (item == null) {
+            return null;
         }
 
-        while (item.nextNode != nodeToRemove) {
+        if (item.key.equals(key)) {
+            table[index] = item.nextNode;
+            return item;
+        }
+
+        while (!item.key.equals(key)) {
+            prevNode = item;
             item = item.nextNode;
         }
 
-        item.nextNode = nodeToRemove.nextNode;
+        prevNode.nextNode = item.nextNode;
 
-        return nodeToRemove;
+        return item;
     }
 
     public void clear() {
@@ -125,7 +123,7 @@ public class MyHashMap<K, V> {
     public int size() {
         int size = 0;
 
-        for (MyNode item : table) {
+        for (MyNode<K, V> item : table) {
             if (item != null) {
                 size++;
                 while (item.nextNode != null) {
@@ -138,23 +136,23 @@ public class MyHashMap<K, V> {
         return size;
     }
 
-    public MyNode get(K key) {
+    public V get(K key) {
         int hash = Objects.hashCode(key);
         int index = hash & (currentCapacity - 1);
 
-        MyNode item = table[index];
+        MyNode<K, V> item = table[index];
 
         if (item == null) {
             return null;
         }
 
-        while (item.hash != hash || item.key != key) {
+        while (item.hash != hash || !item.key.equals(key)) {
             item = item.nextNode;
             if (item == null) {
                 return null;
             }
         }
 
-        return item;
+        return item.value;
     }
 }

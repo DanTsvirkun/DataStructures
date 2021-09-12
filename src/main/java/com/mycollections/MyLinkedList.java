@@ -80,7 +80,7 @@ public class MyLinkedList<E> {
         return size;
     }
 
-    public MyNode get(int index) throws IllegalArgumentException {
+    public E get(int index) throws IllegalArgumentException {
         if (index < 0 || index > size() - 1) {
             throw new IllegalArgumentException("Index out of bounds");
         }
@@ -93,6 +93,6 @@ public class MyLinkedList<E> {
             iterator--;
         }
 
-        return nodeToGet;
+        return nodeToGet.data;
     }
 }

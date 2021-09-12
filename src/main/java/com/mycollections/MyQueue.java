@@ -11,7 +11,7 @@ public class MyQueue<E> {
             throw new IllegalArgumentException("Size can't be less than 0");
         }
 
-        if(size == 0) {
+        if (size == 0) {
             instance = (E[]) new Object[DEFAULT_CAPACITY];
             return;
         }
@@ -82,7 +82,6 @@ public class MyQueue<E> {
 
         System.arraycopy(instance, 1, instance, 0, size() - 1);
 
-        instance[index] = null;
         this.index--;
 
         return firstItem;

@@ -11,7 +11,7 @@ public class MyArrayList<E> {
             throw new IllegalArgumentException("Size can't be less than 0");
         }
 
-        if(size == 0) {
+        if (size == 0) {
             instance = (E[]) new Object[DEFAULT_CAPACITY];
             return;
         }
@@ -71,19 +71,5 @@ public class MyArrayList<E> {
         }
 
         return instance[index];
-    }
-
-    public static void main(String[] args) {
-        MyArrayList<String> list = new MyArrayList<>();
-
-        for (int i = 0; i < 3; i++) {
-            list.add("item-" + i);
-        }
-
-        list.remove(1);
-
-        System.out.println("size = " + list.size());
-        System.out.println("item-0 = " + list.get(0));
-        System.out.println("item-2 = " + list.get(1));
     }
 }

@@ -66,11 +66,11 @@ public class MyStack<E> {
             return null;
         }
 
-        E firstItem = instance[size() - 1];
+        E entityOnTop = instance[size() - 1];
 
         instance[size() - 1] = null;
         this.index--;
 
-        return firstItem;
+        return entityOnTop;
     }
 }

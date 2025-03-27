@@ -59,7 +59,7 @@ class MyLinkedListTest {
     }
 
     @Test
-    public void testRemovingFirstElementFrom3ElementsCollection() {
+    public void testRemovingHeadFrom3ElementsCollection() {
         MyLinkedList<String> list = new MyLinkedList<>();
 
         for (int i = 0; i < 3; i++) {
@@ -71,10 +71,14 @@ class MyLinkedListTest {
         Assertions.assertEquals(2, list.size());
         Assertions.assertEquals("item-1", list.get(0));
         Assertions.assertEquals("item-2", list.get(1));
+        Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> new MyLinkedList<String>().get(0)
+        );
     }
 
     @Test
-    public void testRemovingHeadNodeFrom3ElementsCollection() {
+    public void testRemovingTailFrom3ElementsCollection() {
         MyLinkedList<String> list = new MyLinkedList<>();
 
         for (int i = 0; i < 3; i++) {

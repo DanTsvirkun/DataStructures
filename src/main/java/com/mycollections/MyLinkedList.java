@@ -2,6 +2,7 @@ package com.mycollections;
 
 public class MyLinkedList<E> {
     private MyNode head = null;
+    private MyNode tail = null;
 
     class MyNode {
         private final E data;
@@ -10,17 +11,6 @@ public class MyLinkedList<E> {
 
         public MyNode(E data) {
             this.data = data;
-
-            if (head == null) {
-                head = this;
-                prevNode = null;
-                nextNode = null;
-                return;
-            }
-
-            head.nextNode = this;
-            prevNode = head;
-            nextNode = null;
         }
 
         @Override
@@ -30,7 +20,16 @@ public class MyLinkedList<E> {
     }
 
     public boolean add(E data) {
-        head = new MyNode(data);
+        MyNode newNode = new MyNode(data);
+
+        if (head == null) {
+            head = newNode;
+            tail = newNode;
+        } else {
+            tail.nextNode = newNode;
+            tail = newNode;
+        }
+
         return true;
     }
 
@@ -39,33 +38,36 @@ public class MyLinkedList<E> {
             throw new IllegalArgumentException("Index out of bounds");
         }
 
-        MyNode nodeToRemove = head;
-        int iterator = size();
+        MyNode nodeToRemove;
 
-        while (iterator - 1 != index) {
-            nodeToRemove = nodeToRemove.prevNode;
-            iterator--;
+        if (index == 0) {
+            nodeToRemove = head;
+
+            head = head.nextNode;
+            if (head == null) tail = null;
+
+            return nodeToRemove;
         }
 
-        if (nodeToRemove.prevNode == null && nodeToRemove.nextNode != null) {
-            nodeToRemove.nextNode.prevNode = null;
+        MyNode prevNode = head;
+
+        for (int i = 0; i < index - 1; i++) {
+            prevNode = prevNode.nextNode;
         }
 
-        if (nodeToRemove.nextNode == null && nodeToRemove.prevNode != null) {
-            nodeToRemove.prevNode.nextNode = null;
-            head = nodeToRemove.prevNode;
+        nodeToRemove = prevNode.nextNode;
+        prevNode.nextNode = prevNode.nextNode.nextNode;
+
+        if (prevNode.nextNode == null) {
+            tail = prevNode;
         }
 
-        if (nodeToRemove.nextNode != null && nodeToRemove.prevNode != null) {
-            nodeToRemove.prevNode.nextNode = nodeToRemove.nextNode;
-            nodeToRemove.nextNode.prevNode = nodeToRemove.prevNode;
-        }
-
-        return head;
+        return nodeToRemove;
     }
 
     public void clear() {
         head = null;
+        tail = null;
     }
 
     public int size() {
@@ -73,7 +75,7 @@ public class MyLinkedList<E> {
         int size = 0;
 
         while (currentNode != null) {
-            currentNode = currentNode.prevNode;
+            currentNode = currentNode.nextNode;
             size++;
         }
 
@@ -85,14 +87,12 @@ public class MyLinkedList<E> {
             throw new IllegalArgumentException("Index out of bounds");
         }
 
-        MyNode nodeToGet = head;
-        int iterator = size();
+        MyNode current = head;
 
-        while (iterator - 1 != index) {
-            nodeToGet = nodeToGet.prevNode;
-            iterator--;
+        for (int i = 0; i < index; i++) {
+            current = current.nextNode;
         }
 
-        return nodeToGet.data;
+        return current.data;
     }
 }
